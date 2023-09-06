@@ -9,6 +9,7 @@ WORKDIR /root/project
 COPY judge.yaml /root/project/judge.yaml
 
 WORKDIR /root/peco
+RUN git checkout docker-example
 RUN pip install -r requirements.txt
 
 WORKDIR /root/
