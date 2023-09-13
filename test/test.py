@@ -1,12 +1,36 @@
+import unittest
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 
 from process import process_tasks
-import unittest
-import re
+from config import Config
+from task import list_tasks
 
-class Test(unittest.TestCase):
+class TaskTest(unittest.TestCase):
+    def test_match_files(self):
+        config = Config('all_pass/judge.yaml')
+        tasks = list_tasks(config)
+        self.assertEqual(len(tasks), 5)
+        for (index, files) in tasks:
+            got_input = files['input']
+            file_name = got_input.split('/')[-1]
+            self.assertEqual(file_name, f'input_{index}.txt')
+
+            got_expect = files['expect']
+            file_name = got_expect.split('/')[-1]
+            self.assertEqual(file_name, f'output_{index}.txt')
+
+    def test_match_directories(self):
+        config = Config('match_directories/judge.yaml')
+        tasks = list_tasks(config)
+        self.assertEqual(len(tasks), 3)
+        for (index, files) in tasks:
+            got_dir = files['directory']
+            dir_name = got_dir.split('/')[-1]
+            self.assertEqual(dir_name, f'dir{index}')
+
+class ProcessTest(unittest.TestCase):
     def setUp(self):
         self.pwd = os.getcwd()
 
