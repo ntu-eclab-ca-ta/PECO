@@ -1,0 +1,37 @@
+# Directory structure:
+# ├── Makefile
+# ├── outter.yaml
+# ├── private
+# │   ├── judge.yaml
+# │   ├── supplied
+# │   │   └── <supplied code>
+# │   └── testcases
+# │       └── <test case>
+# └── submit
+#     └── <id>
+#         └── src
+#             └── <submited code>
+
+# Private files, including the supplied code and test cases
+private:
+  path: private
+
+build:
+  path: build
+
+# Judge the submitted codes one by one
+tasks:
+  path: submit
+  format:
+    student: <tasks::format::index>
+    index: "[a-z][0-9]+"
+
+# Move the codes and testcases to the build directory and run the judgement
+process:
+  timeout: 60
+  commands:
+    - rm -rf *
+    - cp -rf <student>/* .
+    - cp -rf <private::path>/* .
+    - docker-compose up --exit-code-from peco
+    - docker-compose down

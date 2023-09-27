@@ -22,3 +22,7 @@ if __name__ == '__main__':
         print(results)
     else:
         print(report(results, verbose = not args.quiet))
+
+    all_clear = all(value is None for value in results.values())
+    exit_code = 0 if all_clear else 1
+    exit(exit_code)

@@ -1,0 +1,8 @@
+version: '3'
+services:
+  peco:
+    build:
+      dockerfile: dockerfile
+    container_name: peco
+    volumes:
+      - ./:/root/project/

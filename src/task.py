@@ -28,6 +28,11 @@ def build_tasks(files_info):
 
 def check_tasks(files_info):
     keys = list(files_info.keys())
+
+    # If there is only one type of file, we don't need to check
+    if len(keys) < 2:
+        return
+
     files_mx_cnt = max([len(files_info[key]) for key in keys])
 
     # Check that every type of file has the same index
@@ -49,6 +54,10 @@ def list_tasks(config):
         if format_type == 'index':
             continue
         format_re = variable.solve_string(config, tasks_format[format_type], prefix='(', postfix=')')
+        # In some cases, the format is representing a directory rather than a file
+        # Add the '$' to the end of the format to make sure there is no postfix after the format
+        # Otherwise, the format might mathes the files within the directory
+        format_re = f'{format_re}$'
         format_list = list_matched_files(files_path, format_re)
         files_info[format_type] = sorted(format_list)
 
@@ -58,6 +67,9 @@ def list_tasks(config):
 def list_files_recursively(path):
     result = []
     for root, dirs, files in os.walk(path):
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            result.append(dir_path)
         for file in files:
             file_path = os.path.join(root, file)
             result.append(file_path)
@@ -66,6 +78,6 @@ def list_files_recursively(path):
 def list_matched_files(files, format):
     # Filter the files
     format = re.compile(format)
-    files = [file for file in files]
     indexed_files = [(file, format.findall(file)) for file in files]
+    # Since we have '$' at the end of the format, the format should be unique. So the matched index should be either [] or [index]
     return [IndexedFile(index[0], file) for file, index in indexed_files if index != []]

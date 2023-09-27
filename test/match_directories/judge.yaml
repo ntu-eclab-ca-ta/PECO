@@ -1,0 +1,41 @@
+# Directory of source code
+source:
+  path: code/src
+
+# Directory of supplied code
+supplied:
+  path: code/supplied
+
+# Directory of built code
+# The directory will be created if it does not exist
+# Before judging, the judger will clean the directory
+build:
+  path: build
+
+# Test case config
+# The judger will find all test cases in the directory
+tasks:
+  path: testcases
+  format:
+    input: input_<tasks::format::index>
+    expect: output_<tasks::format::index>
+    index: "[0-9]+"
+
+# Compile config
+# The judger does compilation before judging
+# If the compilation fails, the judger will return a compile error
+setup:
+  timeout: 60
+  commands:
+    - gcc -o main.o -c <source::path>/main.c -I<supplied::path>
+    - gcc -o func.o -c <supplied::path>/func.c
+    - gcc -o main main.o func.o
+
+# Judge config
+# For each test case, the judger does judging after execution0
+# If the judging fails, the test case fails
+process:
+  timeout: 60
+  commands:
+    - cat <input> | ./main | tee output
+    - diff output <expect>

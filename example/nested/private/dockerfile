@@ -1,0 +1,16 @@
+FROM ubuntu:22.04
+
+# Set the shell to bash and solve `git checkout` issue magically
+SHELL ["/bin/bash", "-c"]
+
+RUN apt update
+RUN apt install git python3 python3-pip -y
+RUN git clone https://github.com/ntu-eclab-ca-ta/PECO /root/peco
+WORKDIR /root/peco
+RUN git fetch --all --tags
+RUN git checkout docker-example-v0.1.1
+RUN pip install -r requirements.txt
+
+WORKDIR /root/
+
+CMD ["python3", "peco/src/main.py", "-c", "project/judge.yaml", "-q"]

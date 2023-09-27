@@ -3,10 +3,37 @@ import os
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 
 from process import process_tasks
+from task import list_tasks
+from config import Config
 import unittest
-import re
 
-class Test(unittest.TestCase):
+class TaskTest(unittest.TestCase):
+    def test_input_only(self):
+        config_file = 'input_only/judge.yaml'
+        config  = Config(config_file)
+        tasks = list_tasks(config)
+        self.assertEqual(len(tasks), 5)
+
+        for i, task in tasks:
+            # get the file name from task['input']
+            file_name = task['input'].split('/')[-1]
+            self.assertEqual(file_name, f'input_{i}.txt')
+
+    def test_match_directories(self):
+        config_file = 'match_directories/judge.yaml'
+        config = Config(config_file)
+        tasks = list_tasks(config)
+        self.assertEqual(len(tasks), 5)
+
+        for i, task in tasks:
+            # get the file name from task['input']
+            file_name = task['input'].split('/')[-1]
+            self.assertEqual(file_name, f'input_{i}')
+
+
+
+
+class ProcessTest(unittest.TestCase):
     def setUp(self):
         self.pwd = os.getcwd()
 
