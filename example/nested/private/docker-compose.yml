@@ -2,7 +2,9 @@ version: '3'
 services:
   peco:
     build:
+      context: .
       dockerfile: dockerfile
     container_name: peco
     volumes:
       - ./:/root/project/
+    user: 1000:1000

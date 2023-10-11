@@ -12,5 +12,7 @@ RUN git checkout docker-example-v0.1.1
 RUN pip install -r requirements.txt
 
 WORKDIR /root/
+RUN chmod 777 /root/
+RUN chmod 777 /root/*
 
 CMD ["python3", "peco/src/main.py", "-c", "project/judge.yaml", "-q"]
