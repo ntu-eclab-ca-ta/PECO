@@ -1,0 +1,31 @@
+# Directory of source code
+source:
+  path: src
+
+# Directory of supplied code
+supplied:
+  path: supplied
+
+# Directory of built code
+# The directory will be created if it does not exist
+# Before judging, the judger will clean the directory
+build:
+  path: build
+
+# Test case config
+# The judger will find all test cases in the directory
+tasks:
+  path: testcases
+  format:
+    input: input_<tasks::format::index>.txt
+    expect: output_<tasks::format::index>.txt
+    index: "[0-9]+"
+  
+# Judge config
+# For each test case, the judger does judging after execution0
+# If the judging fails, the test case fails
+process:
+  timeout: 60
+  commands:
+    - cat <input> | /root/image/bin/jupiter /root/project/main.s | tee output
+    - diff output <expect>

@@ -1,0 +1,23 @@
+FROM ubuntu:22.04
+
+# Set the shell to bash and solve `git checkout` issue magically
+SHELL ["/bin/bash", "-c"]
+
+RUN apt update
+RUN apt install git python3 python3-pip wget unzip -y
+RUN git clone https://github.com/ntu-eclab-ca-ta/PECO /root/peco
+WORKDIR /root/peco
+RUN git fetch --all --tags
+RUN git checkout docker-example-v0.1.1
+RUN pip install -r requirements.txt
+
+RUN chmod 777 /root/
+RUN chmod 777 /root/*
+
+WORKDIR /root/
+
+# Jupiter
+RUN wget -c https://github.com/andrescv/Jupiter/releases/download/v3.1/Jupiter-3.1-linux.zip
+RUN unzip Jupiter-3.1-linux.zip
+
+CMD ["/bin/sh", "-c", "python3 peco/src/main.py -c project/judge.yaml -q > /root/peco.log"]

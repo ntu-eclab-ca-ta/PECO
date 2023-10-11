@@ -1,0 +1,49 @@
+# Directory structure:
+# ├── Makefile
+# ├── outter.yaml
+# ├── private
+# │   ├── judge.yaml
+# │   ├── supplied
+# │   │   └── <supplied code>
+# │   └── testcases
+# │       └── <test case>
+# └── submit
+#     └── <id file>
+
+# Private files, including the supplied code and test cases
+private:
+  path: private
+
+score:
+  path: score.txt
+
+build:
+  path: build
+
+# Judge the submitted codes one by one
+tasks:
+  path: submit
+  format:
+    student: <tasks::format::index>
+    index: "[a-zA-Z0-9]{9}.*"
+
+# Setup the enviroment
+setup:
+  timeout: 60
+  commands:
+    - rm "<score::path>" || true
+    - cp -rf "<private::path>"/* .
+    - python3 judge/main.py -s "<tasks::path>" --rename
+
+# Move the codes and testcases to the build directory and run the judgement
+process:
+  timeout: 60
+  commands:
+    - rm main.s || true
+    - cp -rf "<student>" ./main.s
+    # - python3 judge/main.py -s "<student>" --decompress
+    # - docker-compose up --exit-code-from peco
+    - docker-compose up
+    - docker cp peco:/root/peco.log ./
+    - docker-compose down
+    - python3 judge/main.py -s peco.log -d "<score::path>" --judge --case "<student>"
