@@ -42,6 +42,7 @@ def run(config):
     for (index, files) in tasks:
         for file_type, file_path in files.items():
             config[file_type] = file_path
+        config["id"] = f'{index}'
         (log, result) = execute_commands(config, 'process')
         test_result[index] = None if result else log
     return test_result
