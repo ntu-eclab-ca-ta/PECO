@@ -10,7 +10,7 @@ def without_fail(result):
 
 def default_logger(result):
     if isinstance(result, str):
-        return result
+        return {'system': result}
     else:
         return {'stdout': result.stdout, 'stderr': result.stderr}
 

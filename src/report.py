@@ -39,13 +39,10 @@ def report(results, verbose=True):
                 for command, outcome in log.items():
                     report += '-' * length + '\n'
                     report += f'{shader(command, COMMAND, verbose)}: \n'
-                    if outcome['stdout'] != b'':
-                        report += f'{shader("stdout:", OUTCOME, verbose)}\n'
-                        report += f'{outcome["stdout"].decode()}\n'
-                        report += '\n'
-                    if outcome["stderr"] != b'':
-                        report += f'{shader("stderr:", OUTCOME, verbose)}\n'
-                        report += f'{outcome["stderr"].decode()}\n'
+                    for key, value in outcome.items():
+                        report += f'{shader(key, OUTCOME, verbose)}\n'
+                        value = value.decode() if isinstance(value, bytes) else value
+                        report += f'{value}\n'
                         report += '\n'
             report += '=' * length + '\n\n'
     # Conclude the report with a summary (Failed / Total)
